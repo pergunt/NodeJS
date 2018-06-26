@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_PATH=./src/utils nodemon index",
+    "start": "cross-env NODE_PATH=./src/utils nodemon index",
     "debug": "NODE_PATH=./src/utils  node --inspect index"
   },
   "keywords": [],
@@ -12,5 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.3"
+  },
+  "devDependencies": {
+    "cross-env": "^5.2.0"
   }
 }
