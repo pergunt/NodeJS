@@ -15,23 +15,16 @@ class RequestListener {
 					break;
 
 				case 'POST':
-					this.handlePOST(req, res);
+					this.flowManaging(req, res, 'POST');
 					break;
 
 				case 'DELETE':
-					this.handleDELETE(req, res);
+					this.flowManaging(req, res, 'DELETE');
 					break;
 			}
 		});
 	}
-	handlePUT(req, res) {
 
-		fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
-			const currentData = JSON.parse(data);
-
-			RequestListener.writeFile(currentData, res, this.outputFile);
-		});
-	}
 	handleGET(req, res) {
 		const file = new fs.ReadStream(this.fileName, {encoding: 'utf-8'});
 		file.pipe(res);
@@ -47,7 +40,7 @@ class RequestListener {
 			console.log('connection is closed')
 		});
 	}
-	handlePOST(req, res) {
+	flowManaging(req, res, flag) {
 		let body = '';
 		req
 			.on('readable', () => {
@@ -58,31 +51,22 @@ class RequestListener {
 			})
 			.on('end', () => {
 				body = JSON.parse(body);
-				const users = {
-					[body.id]: {...body}
-				};
-				RequestListener.writeFile(users, res, this.outputFile);
-			});
-	}
-	handleDELETE(req, res) {
-		let body = '';
-		req
-			.on('readable', () => {
-				const content = req.read();
-				if (content) {
-					body += content;
+				if (flag === 'POST') {
+					fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
+						const users = {
+							[body.id]: {...body}
+						};
+						RequestListener.writeFile({...users, ...JSON.parse(data)}, res, this.outputFile);
+					});
+				} else {
+					fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
+						const currentData = JSON.parse(data);
+						delete currentData[body.id];
+
+						RequestListener.writeFile(currentData, res, this.outputFile);
+					});
 				}
-			})
-			.on('end', () => {
-				body = JSON.parse(body);
-
-				fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
-					const currentData = JSON.parse(data);
-					delete currentData[body.id];
-
-					RequestListener.writeFile(currentData, res, this.outputFile);
-				});
-			})
+			});
 	}
 	static writeFile(content, res, outputFile) {
 		fs.writeFile(outputFile, JSON.stringify(content), function (err) {
