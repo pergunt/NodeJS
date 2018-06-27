@@ -3,6 +3,8 @@ const handler = require('handler');
 
 const server = new Server(handler);
 
+
+
 const emit = server.emit;
 server.emit = (...rest) => {
 	console.log(rest[0]);
