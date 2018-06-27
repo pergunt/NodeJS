@@ -1,14 +1,17 @@
 const {Server} = require('http');
-const handler = require('handler');
-
-const server = new Server(handler);
-
+//const requestHandler = require('requestHandler');
+const RequestsHandler = require('RequestListener');
 
 
-const emit = server.emit;
-server.emit = (...rest) => {
+
+const requestListener = new RequestsHandler('index.html', new Server(), 'users.json');
+
+
+const emit = requestListener.server.emit;
+
+requestListener.server.emit = (...rest) => {
 	console.log(rest[0]);
-	return emit.apply(server, rest);
+	return emit.apply(requestListener.server, rest);
 };
 
-module.exports = server;
+module.exports = requestListener;

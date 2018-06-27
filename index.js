@@ -1,3 +1,4 @@
-const server = require('./src/server');
+const requestListener = require('./src/server');
 
-server.listen(8008);
+requestListener.server.listen(8008);
+
