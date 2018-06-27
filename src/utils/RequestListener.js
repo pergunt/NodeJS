@@ -15,11 +15,11 @@ class RequestListener {
 					break;
 
 				case 'POST':
-					this.flowManaging(req, res, 'POST');
+					this.fileManaging(req, res);
 					break;
 
 				case 'DELETE':
-					this.flowManaging(req, res, 'DELETE');
+					this.fileManaging(req, res);
 					break;
 			}
 		});
@@ -40,7 +40,38 @@ class RequestListener {
 			console.log('connection is closed')
 		});
 	}
-	flowManaging(req, res, flag) {
+	fileManaging(req, res) {
+
+		RequestListener.readRequestBody(req, body => {
+			if (req.method === 'POST') {
+
+				this.readFile(body, res, data => {
+					const users = {
+						[body.id]: {...body}
+					};
+
+					RequestListener.writeFile({...users, ...JSON.parse(data)}, res, this.outputFile);
+				})
+
+			} else {
+
+				this.readFile(body, res, data => {
+					const currentData = JSON.parse(data);
+					delete currentData[body.id];
+
+					RequestListener.writeFile(currentData, res, this.outputFile);
+				})
+
+			}
+		});
+
+	}
+	readFile(body, res, func) {
+		fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
+			func(data)
+		});
+	}
+	static readRequestBody(req, func) {
 		let body = '';
 		req
 			.on('readable', () => {
@@ -51,21 +82,7 @@ class RequestListener {
 			})
 			.on('end', () => {
 				body = JSON.parse(body);
-				if (flag === 'POST') {
-					fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
-						const users = {
-							[body.id]: {...body}
-						};
-						RequestListener.writeFile({...users, ...JSON.parse(data)}, res, this.outputFile);
-					});
-				} else {
-					fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
-						const currentData = JSON.parse(data);
-						delete currentData[body.id];
-
-						RequestListener.writeFile(currentData, res, this.outputFile);
-					});
-				}
+				func(body)
 			});
 	}
 	static writeFile(content, res, outputFile) {
