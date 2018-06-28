@@ -1,0 +1,1 @@
+module.exports = obj => Object.keys(obj).map( el => obj[el] )

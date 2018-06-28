@@ -1,6 +1,6 @@
 const fs = require('fs');
 const errorHandler = require('errorHandler');
-
+const mapToArr = require('mapToArr');
 
 class RequestListener {
 	constructor(initFileName, server, outputFile) {
@@ -15,12 +15,15 @@ class RequestListener {
 					break;
 
 				case 'POST':
-					this.fileManaging(req, res);
+					this.handlePOST(req, res);
 					break;
 
 				case 'DELETE':
-					this.fileManaging(req, res);
+					this.handleDELETE(req, res);
 					break;
+
+				case 'PUT':
+
 			}
 		});
 	}
@@ -40,34 +43,36 @@ class RequestListener {
 			console.log('connection is closed')
 		});
 	}
-	fileManaging(req, res) {
+	handlePOST(req, res) {
 
-		RequestListener.readRequestBody(req, body => {
-			if (req.method === 'POST') {
+        RequestListener.readRequestBody(req, requestBody => {
 
-				this.readFile(body, res, data => {
-					const users = {
-						[body.id]: {...body}
-					};
+            this.readFile( data => {
 
-					RequestListener.writeFile({...users, ...JSON.parse(data)}, res, this.outputFile);
-				})
-
-			} else {
-
-				this.readFile(body, res, data => {
-					const currentData = JSON.parse(data);
-					delete currentData[body.id];
-
-					RequestListener.writeFile(currentData, res, this.outputFile);
-				})
-
-			}
-		});
-
+            	const exists = mapToArr(data).filter( user => user.id === requestBody.id);
+				if (exists.length) {
+					console.log('reading--------------', exists,'-----');
+                    return res.end('user already exists!')
+				}
+                const users = {
+                    [requestBody.id]: {...requestBody}
+                };
+                RequestListener.writeFile({...users, ...data}, res, this.outputFile);
+            })
+        });
 	}
-	readFile(body, res, func) {
-		fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, data) => {
+	handleDELETE(req, res) {
+		RequestListener.readRequestBody(req, body => {
+			this.readFile(body, res, data => {
+				const currentData = JSON.parse(data);
+				delete currentData[body.id];
+				RequestListener.writeFile(currentData, res, this.outputFile);
+			})
+		});
+	}
+	readFile(func) {
+        fs.readFile(this.outputFile ,{encoding: 'utf-8'},  (err, json) => {
+			const data = json ? JSON.parse(json) : {};
 			func(data)
 		});
 	}
@@ -88,13 +93,18 @@ class RequestListener {
 	static writeFile(content, res, outputFile) {
 		fs.writeFile(outputFile, JSON.stringify(content), function (err) {
 			if (err) {
-				errorHandler(err, res);
+                RequestListener.handleError(err, res);
 			} else {
 				res.statusCode = 200;
-				res.end('ok')
+				res.end('ok');
 			}
 		});
 	}
+	static handleError(error, res) {
+        res.statusCode = 500;
+        res.end(error.message || 'Server error');
+    }
+
 }
 
 module.exports = RequestListener;
