@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Files</title>
+</head>
+<body>
+    <h3>File server</h3>
+    <form>
+        <input type="text" placeholder="File name" name="file">
+        <input type="text" placeholder="File content" name="content">
+        <button id="write">Send something</button>
+        <button id="delete">Delete File</button>
+    </form>
+    <script>
+        const form = document.forms[0];
+        form.onsubmit = () => false;
+        function request(file, payload) {
+            fetch(file, payload)
+              .then(resp => {
+                console.log(resp);
+              })
+              .catch(err => alert(err.message))
+        }
+        const writeBtn = document.querySelector('#write');
+        const deleteBtn = document.querySelector('#delete');
+        writeBtn.onclick = e => {
+          const {file, content} = form.elements;
+          // if (!file.value) {
+          //   return;
+          // }
+            request(`/${file.value}`, {
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                content: content.value
+              })
+            });
+        };
+        deleteBtn.onclick = () => {
+          const {file} = form.elements;
+          request(`/${file.value}`, {
+            method: 'delete'
+          });
+        }
+    </script>
+</body>
+</html>
