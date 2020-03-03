@@ -13,11 +13,11 @@ server.on('request', (req, res) => {
   switch (req.method) {
     case 'GET':
       if (pathname === '/') {
-        return sendFile(__dirname + '/index.html', res, 'text/html');
+        sendFile(__dirname + '/index.html', res, 'text/html');
       } else {
-        res.statusCode = 404;
-        return res.end('Wrong url');
+        sendFile(FILES_DIR + `/${pathname}`, res, 'application/octet-stream');
       }
+      break;
     case 'DELETE':
       fs.unlink(filePath, err => {
         if (err.code === 'ENOENT') {
@@ -58,7 +58,9 @@ server.on('request', (req, res) => {
           res.statusCode = 200;
           res.end('OK');
         })
-        .on('open', () => res.setHeader('Content-Type', 'application/octet-stream'));
+        .on('open', () => {
+          res.setHeader('Content-Type', 'application/octet-stream')
+        });
       req
         .on('data', chunk => {
           size += chunk.length;
@@ -77,9 +79,11 @@ server.on('request', (req, res) => {
         .on('close', () => {
           file.destroy();
         })
-        .pipe(file);
+        .pipe(file)
 
   }
 });
 
 server.listen(3000, () => console.log('listening 3000'));
+
+module.exports = server;

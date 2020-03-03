@@ -6,13 +6,16 @@
   "scripts": {
     "start:file": "cross-env NODE_PATH=./utils nodemon file_server/server",
     "start": "cross-env NODE_PATH=./src:./src/modules nodemon index",
-    "debug": "cross-env NODE_PATH=./src  node --inspect index"
+    "debug": "cross-env NODE_PATH=./src  node --inspect index",
+    "test_file_server": "cross-env NODE_PATH=./utils mocha 2_file_server/test/index.test.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "mocha": "^7.1.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "cross-env": "^5.2.0"
