@@ -7,6 +7,12 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
+const config = require('config');
+
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+const mongoose = require('lib/mongoose');
+
 const app = express();
 
 // view engine setup
@@ -17,8 +23,20 @@ app.set('view engine', 'ejs');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cookieParser());
+app.use(session({
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection
+  }),
+  secret: config.get('session:secret'),
+  key: config.get('session:key'),
+  cookie: config.get('session:cookie')
+}));
+app.use((req, res, next) => {
+  req.session.views = req.session.views + 1 || 1;
+  res.send(`Visits ${req.session.views}`);
+});
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

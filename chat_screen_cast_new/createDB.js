@@ -3,13 +3,6 @@ const mongoose = require('lib/mongoose');
 
 const mongooseConnection = mongoose.connection;
 
-// user.save((err, user, affected) => {
-//   console.log(err, user);
-//
-//   User.findOne({username: 'Ivan'}, (err, ivan) => {
-//     console.log(ivan);
-//   })
-// });
 const open = () => mongooseConnection.once('open', () => console.log('connection open'));
 const dropDB = () => mongooseConnection.db.dropDatabase();
 const disconnect = () => mongoose.disconnect();
@@ -18,7 +11,7 @@ const requireModels = async () => {
   require('models/user');
   const models = mongoose.models;
   for (let model of Object.values(models)) {
-    await model.ensureIndexes();
+    await model.createIndex();
   }
 };
 const createUsers = async () => {
