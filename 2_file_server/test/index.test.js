@@ -12,10 +12,7 @@ describe('server tests', () => {
   });
 
   it('should return index.html', (done) => {
-    fetch('http://localhost:3000')
-      .then(res => {
-        return res.text()
-      })
+    fetch('http://localhost:3000').then(res => res.text())
       .then(body => {
         const file = fs.readFileSync('2_file_server/index.html', {encoding: 'utf-8'});
         assert.equal(body, file);
