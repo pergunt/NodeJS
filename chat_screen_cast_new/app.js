@@ -33,10 +33,12 @@ app.use(session({
   key: config.get('session:key'),
   cookie: config.get('session:cookie')
 }));
-app.use((req, res, next) => {
-  req.session.views = req.session.views + 1 || 1;
-  res.send(`Visits ${req.session.views}`);
-});
+app.use(require('middlewares/loadUser'));
+//
+// app.use((req, res, next) => {
+//   req.session.views = req.session.views + 1 || 1;
+//   res.send(`Visits ${req.session.views}`);
+// });
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

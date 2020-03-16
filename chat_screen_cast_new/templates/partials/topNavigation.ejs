@@ -1,0 +1,26 @@
+<nav class="navbar navbar-default" role="navigation">
+  <ul class="nav navbar-nav">
+    <li><a href="/">Главная</a></li>
+    <% if (user) { %>
+    <li><a href="/chat">Чат</a></li>
+    <% } %>
+  </ul>
+  <ul class="nav navbar-nav navbar-right">
+    <% if (user) { %>
+    <li><a href="" class="logout">Выйти</a></li>
+    <% } else { %>
+    <li><a href="/login">Войти</a></li>
+    <% } %>
+  </ul>
+</nav>
+<script>
+    $('.logout').on('click', (e) => {
+      fetch('/logout', {method: 'post'})
+      .then((res) => {
+        if (res.statusCode === 200) {
+            window.location.href = '/';
+        }
+        console.log('123')
+      })
+    })
+</script>
