@@ -1,5 +1,41 @@
 <% layout('layout/page') -%>
-<% block('title', 'Chat') -%>
+<% block('title', "Чат") -%>
 
+<script src="/socket.io/socket.io.js"></script>
 
-<p>Welcome, <%= user.get('username') %> </p>
+<div id="room">
+  <ul></ul>
+  <form>
+    <input class="form-control" autocomplete="off" autofocus placeholder="Сообщение...">
+  </form>
+</div>
+
+<script>
+  const socket = io.connect('', {
+    reconnection: false
+  });
+  const form = $('#room form');
+  const ul = $('#room ul');
+  form.submit(function() {
+    var input = $(this).find('input');
+    var text = input.val();
+    input.val('');
+    socket.emit('message', text, function(data) {
+      $('<li>', {text: text}).appendTo(ul);
+    });
+    return false;
+  });
+  socket
+    .on('message', function(text) {
+        $('<li>', {text: text}).appendTo(ul);
+      })
+    .on('disconnect', () => {
+        setTimeout(reconnect, 500);
+    });
+  function reconnect() {
+    socket.on('connect_error', () => {
+        setTimeout(reconnect, 500);
+    }).on('error', () => setTimeout(reconnect, 500));
+    socket.connect();
+  }
+</script>
