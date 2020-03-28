@@ -7,36 +7,47 @@ const router = new Router({
 });
 const chat = {
   clients: [],
-  subscribe(ctx) {
-    this.clients.push(ctx);
-    ctx.res.on('close', () => {
-      const clients = this.clients;
-      this.clients = clients.splice(clients.indexOf(ctx), 1);
-      console.log(this.clients);
-    })
+  subscribe(resolve) {
+    this.clients.push(resolve);
   },
   publish(message) {
     console.log('publish ' + message);
-    this.clients.forEach(ctx => {
-      ctx.body = message;
+    this.clients.forEach(resolve => {
+      resolve(message);
     });
     this.clients = [];
   }
 };
 router.get('/', async ctx => {
   ctx.body = ctx.render(path.resolve(__dirname, 'index.pug'))
-})
-  .get('/subscribe', async (ctx, next) => {
-    chat.subscribe(ctx);
-    await next();
-  })
-  .use(async ctx => {
-    await new Promise(resolve => {
-      if (ctx.body) {
-        chat.publish(ctx.body);
-        resolve();
-      }
-    })
+});
+router.get('/subscribe', async (ctx, next) => {
+  ctx.set('Cache-Control', 'nocache,must-revalidate');
+  const promise = new Promise((resolve, reject) => {
+    chat.subscribe(resolve);
+    ctx.res.on('close', () => {
+      const clients = chat.clients;
+      chat.clients = clients.splice(clients.indexOf(resolve), 1);
+      const error = new Error('Connection closed');
+      error.code = 'ECONNRESET';
+      reject(error);
+    });
+  });
+  let msg;
+  try {
+    msg = await promise;
+  } catch (e) {
+    if (e.code === 'ECONNRESET') return;
+    throw e;
+  }
+  ctx.body = msg;
+});
+router.post('/publish',  async ctx => {
+    const message = ctx.request.body;
+    if (!message) {
+      ctx.throw(404);
+    }
+    chat.publish(message);
   });
 
 module.exports = router;

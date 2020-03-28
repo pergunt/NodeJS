@@ -6,6 +6,7 @@ form.onsubmit = e => {
   const msg = JSON.stringify({
     message: e.target.elements.message.value
   });
+  xhr.setRequestHeader('content-type', 'application/json;charset=utf-8');
   xhr.send(msg);
   e.target.elements.message.value = '';
   return false;
