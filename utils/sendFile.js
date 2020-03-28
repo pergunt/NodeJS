@@ -8,7 +8,7 @@ function sendFile(fileName, res, mimeType) {
       if (err.code === 'ENOENT') {
         res.statusCode = 404;
         res.end('File is not found');
-        return
+        return;
       }
       res.statusCode = 500;
       res.end('Server error')
