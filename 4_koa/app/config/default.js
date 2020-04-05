@@ -3,5 +3,8 @@ module.exports = {
   // or a separate config
   port: 3000,
   secret: 'mysecret',
-  root: process.cwd()
+  root: process.cwd(),
+  crypto: {
+    hash: 'asdasdasd1212312adfdsgtjl.'
+  }
 };
