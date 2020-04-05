@@ -22,6 +22,9 @@ handlers.forEach(handler => require('./handlers/' + handler).init(app));
 // can be split into files too
 const Router = require('@koa/router');
 const chatRouter = require('./01_ht_chat_koa_rewritten/server');
+const usersRouter = require('./05_users_server/server');
+const authServer = require('./06_authentication/server');
+
 
 const router = new Router();
 
@@ -63,5 +66,7 @@ router.get('/', async function(ctx) {
 
 app.use(router.routes());
 app.use(chatRouter.routes());
+app.use(usersRouter.routes());
+app.use(authServer.routes());
 
 app.listen(config.get('port'));

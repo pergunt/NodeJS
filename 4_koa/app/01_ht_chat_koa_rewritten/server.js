@@ -1,6 +1,7 @@
 // can be split into files too
 const Router = require('@koa/router');
 const path = require('path');
+const {serveStatic} = require('utils');
 
 const router = new Router({
   prefix: '/01_ht_chat_koa_rewritten'
@@ -11,14 +12,16 @@ const chat = {
     this.clients.push(resolve);
   },
   publish(message) {
-    console.log('publish ' + message);
+    console.log('publish ', message);
     this.clients.forEach(resolve => {
       resolve(message);
     });
     this.clients = [];
   }
 };
+
 router.get('/', async ctx => {
+  serveStatic(ctx.app, path.resolve(__dirname, 'static'));
   ctx.body = ctx.render(path.resolve(__dirname, 'index.pug'))
 });
 router.get('/subscribe', async (ctx, next) => {
@@ -43,11 +46,12 @@ router.get('/subscribe', async (ctx, next) => {
   ctx.body = msg;
 });
 router.post('/publish',  async ctx => {
-    const message = ctx.request.body;
-    if (!message) {
-      ctx.throw(404);
-    }
-    chat.publish(message);
-  });
+  const message = ctx.request.body;
+  if (!message) {
+    ctx.throw(404);
+  }
+  chat.publish(message);
+  ctx.respond = false;
+});
 
 module.exports = router;
