@@ -4,18 +4,18 @@ const path = require('path');
 const User = require('mongo/models/User').User;
 const mongoose = require('mongoose');
 const _ = require('lodash');
+const passport = require('libs/passport/index.js');
 
-const router = new Router({
-  prefix: '/auth'
-});
+const router = new Router();
 
-const getPath = str => path.resolve(__dirname, str);
 
-router.get('/', async ctx => {
-  serveStatic(ctx.app, getPath('static'));
-  ctx.body = ctx.render(getPath('index.pug'), {
-    title: 'Test auth',
-  });
-});
+router.get('/', require('./frontpage').get);
+router.post('/login', require('./login').post);
+router.post('/logout', require('./login').post);
 
+/*
+router.get('/', require('./routes/frontpage').get);
+router.post('/login', require('./routes/login').post);
+router.post('/logout', require('./routes/logout').post);
+ */
 module.exports = router;

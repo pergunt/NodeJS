@@ -31,7 +31,7 @@ const userSchema = new Schema({
   salt: {
     required: true,
     type: String
-  }
+  },
   parent: {
     ref: 'User',
     type: Schema.Types.ObjectId
