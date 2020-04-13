@@ -1,10 +1,11 @@
-
 const User = require('mongo/models/User').User;
 const passport = require('koa-passport');
 
-passport.serializeUser((user, done) => {
-  done(null, user.email);
+// паспорт напрямую с базой не работает
+passport.serializeUser(function(user, done) {
+  done(null, user.email); // uses _id as idField
 });
-passport.deserializeUser((email, done) => {
-  User.findOne({email}, done)
+
+passport.deserializeUser(function(email, done) {
+  User.findOne({email:email}, done); // callback version checks id validity automatically
 });

@@ -90,10 +90,9 @@ userSchema.virtual('fullName')
   });
 userSchema.statics.publickFields = ['name', 'email'];
 
-const User = mongoose.model('User', userSchema);
+exports.User = mongoose.model('User', userSchema);
 
-exports.User = User;
-
+/*
 async function createUsers() {
   await User.deleteMany();
   const ivan = new User({
@@ -121,4 +120,4 @@ async function createUsers() {
       console.log(err);
       mongoose.disconnect();
     })
-}
+}*/

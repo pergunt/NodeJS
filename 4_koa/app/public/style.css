@@ -1,0 +1,8 @@
+.error {
+    border: 1px solid crimson;
+    color: crimson;
+}
+input[type="text"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

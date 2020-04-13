@@ -1,5 +1,5 @@
 const passport = require('koa-passport');
-const User = require('mongo/models/User').User;
+const User = require('mongo/models/user');
 const pick = require('lodash/pick');
 
 exports.get = async function(ctx, next) {

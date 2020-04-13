@@ -1,10 +1,12 @@
 
 const passport = require('koa-passport');
 
+
 exports.post = async function(ctx, next) {
   // запускает стратегию, станадартные опции что делать с результатом
   // опции @https://github.com/jaredhanson/passport/blob/master/lib/middleware/authenticate.js
   // можно передать и функцию
+  console.log(ctx);
   await passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/',

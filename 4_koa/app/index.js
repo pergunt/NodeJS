@@ -15,8 +15,8 @@ const config = require('config');
 const path = require('path');
 const fs = require('fs');
 
-const handlers = fs.readdirSync(path.join(__dirname, 'handlers')).sort();
-handlers.forEach(handler => require('./handlers/' + handler).init(app));
+const handlers = fs.readdirSync(path.join(__dirname, 'middlewares')).sort();
+handlers.forEach(handler => require('./middlewares/' + handler).init(app));
 
 // can be split into files too
 const Router = require('@koa/router');
@@ -38,9 +38,9 @@ router.get('/views', async function(ctx, next) {
   });
 });
 
-app.use(router.routes());
+// app.use(router.routes());
 // app.use(chatRouter.routes());
-app.use(usersRouter.routes());
+// app.use(usersRouter.routes());
 app.use(authServer.routes());
 
 app.listen(config.get('port'));

@@ -1,7 +1,7 @@
 const {serveStatic} = require('utils');
 const Router = require('@koa/router');
 const path = require('path');
-const User = require('mongo/models/User').User;
+// const User = require('mongo/models/User').User;
 const mongoose = require('mongoose');
 const _ = require('lodash');
 
@@ -26,7 +26,7 @@ router
     const users = await User.find({});
 
     serveStatic(ctx.app, getPath('static'));
-    ctx.body = ctx.render(getPath('index.pug'), {
+    ctx.body = ctx.render('users', {
       title: 'Test users CRUD mongoose',
       users: users.map(user => user.toObject())
     });
