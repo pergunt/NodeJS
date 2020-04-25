@@ -26,16 +26,29 @@ const userSchema = new Schema({
   deleted: Boolean,
   passwordHash: {
     type: String,
-    required: true
   },
   salt: {
-    required: true,
     type: String
   },
   parent: {
     ref: 'User',
     type: Schema.Types.ObjectId
-  }
+  },
+  gender: {
+    type: String,
+    enum: {
+      values:  ['male', 'female'],
+      message: "Неизвестное значение для пола."
+    }
+  },
+  providers: [{
+    name:    String,
+    nameId:  {
+      type:  String,
+      index: true
+    },
+    profile: {} // updates just fine if I replace it with a new value, w/o going inside
+  }]
 }, {
   timestamp: true
 });
@@ -71,7 +84,9 @@ userSchema.virtual('password')
   });
 
 userSchema.methods.checkPassword = function (password) {
-  if (!password || !this.passwordHash) return false;
+  if (!password || !this.passwordHash) {
+    return false;
+  }
   return crypto.pbkdf2Sync(
     password,
     this.salt,
@@ -88,7 +103,8 @@ userSchema.virtual('fullName')
   .set(function (value) {
     [this.name, this.surname] = value.trim().split(' ')
   });
-userSchema.statics.publickFields = ['name', 'email'];
+
+userSchema.statics.publicFields = ['name', 'email'];
 
 exports.User = mongoose.model('User', userSchema);
 

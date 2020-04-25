@@ -17,6 +17,16 @@ module.exports = {
       }
     }
   },
+  passport: {
+    facebook: {
+      appSecret: '86fd3c89558286f060a1c16785c951e2',
+      appId: '535687060470235',
+      passportOptions: {
+        display: 'popup',
+        scope:   ['email']
+      }
+    }
+  },
   crypto: {
     hash: {
       length:     128,

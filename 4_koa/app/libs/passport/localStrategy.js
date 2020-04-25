@@ -7,7 +7,7 @@ let User = require('mongo/models/User').User;
 passport.use(new LocalStrategy({
     usernameField: 'email', // 'username' by default
     passwordField: 'password',
-    passReqToCallback: true // req for more complex cases
+    passReqToCallback: true, // req for more complex cases
   },
   // Три возможных итога функции
   // done(null, user[, info]) ->
@@ -22,9 +22,6 @@ passport.use(new LocalStrategy({
     User.findOne({ email }, (err, user) => {
       if (err) {
         return done(err);
-      }
-      if (user) {
-        user.password = password
       }
 
       if (!user || !user.checkPassword(password)) {

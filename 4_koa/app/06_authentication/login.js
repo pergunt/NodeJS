@@ -10,8 +10,9 @@ exports.post = async function(ctx, next) {
   await passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/',
-    //failureMessage: true // запишет сообщение об ошибке в session.messages[]
-    failureFlash: true // req.flash, better
+    successFlash: 'Welcome!',
+    failureFlash: true, // req.flash, better
+    // failureMessage: true, // запишет сообщение об ошибке в session.messages[]
 
     // assignProperty: 'something' присвоить юзера в свойство req.something
     //   - нужно для привязывания акков соц. сетей

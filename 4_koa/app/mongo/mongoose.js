@@ -5,7 +5,7 @@ const mongoose = require('mongoose'),
 mongoose.Promise = Promise;
 mongoose.plugin(beautyValidation);
 
-mongoose.connect(config.get('mongoose').uri, {
+mongoose.connect(config.get('mongoose.uri'), {
   useCreateIndex: true,
   useFindAndModify: false,
   useNewUrlParser: true,
