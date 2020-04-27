@@ -1,4 +1,5 @@
 const User = require('mongo/models/User').User;
+const {makeProviderId} = require('utils');
 
 function UserAuthError(message) {
   this.message = message;
@@ -30,7 +31,7 @@ module.exports = async function(req, profile, done) {
       // now we clean the connection to make a new one
       for (let i = 0; i < alreadyConnectedUser.providers.length; i++) {
         const provider = alreadyConnectedUser.providers[i];
-        if (provider.nameId == providerNameId) {
+        if (provider.nameId === providerNameId) {
           provider.remove();
           i--;
         }
@@ -122,8 +123,4 @@ function mergeProfile(user, profile) {
   });
 
   user.verifiedEmail = true;
-}
-
-function makeProviderId(profile) {
-  return profile.provider + ":" + profile.id;
 }

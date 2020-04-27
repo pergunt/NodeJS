@@ -4,18 +4,15 @@ const config = require('config');
 const User = require('mongo/models/User').User;
 const authenticateByProfile = require('./authenticateByProfile');
 
-function makeProviderId(profile) {
-  return profile.provider + ":" + profile.id;
-}
-
 passport.use(new FacebookStrategy({
     clientID: config.passport.facebook.appId,
     clientSecret: config.passport.facebook.appSecret,
     passReqToCallback: true,
-    profileFields: ['id', 'about', 'email', 'gender', 'link', 'locale', 'timezone', 'name'],
+    profileFields: ['id', 'picture', 'about', 'email', 'gender', 'link', 'locale', 'timezone', 'name'],
     callbackURL: '/auth/facebook/callback'
   }, (req, accessToken, refreshToken, profile, done) => {
     const p = profile;
+    console.log(accessToken);
     authenticateByProfile(req, profile, done);
   }
 ));

@@ -8,6 +8,7 @@ if (process.env.TRACE) {
 }
 
 const Koa = require('koa');
+const https = require('https');
 const app = new Koa();
 
 const config = require('config');
@@ -43,4 +44,12 @@ router.get('/views', async function(ctx, next) {
 // app.use(usersRouter.routes());
 app.use(authServer.routes());
 
-app.listen(config.get('port'));
+// app.listen(config.get('port'));
+const options = {
+  key: fs.readFileSync(path.resolve(__dirname, 'key.pem')),
+  cert: fs.readFileSync(path.resolve(__dirname, 'cert.pem'))
+};
+
+https.createServer(options, app.callback()).listen(config.get('port'), () => {
+  console.log('Listening at', config.get('port'));
+});

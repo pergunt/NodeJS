@@ -6,7 +6,21 @@ html
     link(rel="stylesheet" href="/style.css")
 
   body
+    script.
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId            : '535687060470235',
+                autoLogAppEvents : true,
+                xfbml            : true,
+                version          : 'v6.0'
+            });
+        };
+    script(
+        defer
+        src='https://connect.facebook.net/en_US/sdk.js'
+    )
     .container
       include messages
 
       block content
+    script(defer src="/auth.js")

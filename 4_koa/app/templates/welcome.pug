@@ -3,7 +3,9 @@ extends layout
 block content
 
   h1 Welcome, #{user.name}
-
+  - console.log(photos)
+  each photo in photos ? photos : []
+    img(src=photo.value)
   p You are logged in.
 
   form(action="/logout" method="post")

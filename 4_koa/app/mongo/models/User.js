@@ -107,33 +107,3 @@ userSchema.virtual('fullName')
 userSchema.statics.publicFields = ['name', 'email'];
 
 exports.User = mongoose.model('User', userSchema);
-
-/*
-async function createUsers() {
-  await User.deleteMany();
-  const ivan = new User({
-    name: 'Ivan', surname: 'Roskoshnyi'
-  });
-  const maria = new User({
-    name: 'maria',
-    surname: 'Boboa',
-    parent: ivan
-  });
-
-  Promise.all([
-    ivan.save(),
-    maria.save(),
-  ])
-    .then(async () => {
-      console.log(
-        await User.findOne({
-          name: 'maria'
-        }).populate('children')
-      );
-      mongoose.disconnect();
-    })
-    .catch(err => {
-      console.log(err);
-      mongoose.disconnect();
-    })
-}*/

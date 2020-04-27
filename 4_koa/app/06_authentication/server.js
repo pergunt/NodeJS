@@ -11,7 +11,15 @@ const router = new Router();
 router
   .get('/', frontPage.get)
   .get('/signup', registration.get)
-  .get('/login/facebook', passport.authenticate('facebook', config.passport.facebook.passportOptions))
+  .get('/login/facebook', async (ctx, next) => {
+    console.log('----------------facebook')
+    await passport.authenticate('facebook-token', config.passport.facebook.passportOptions)(ctx, next);
+    if (ctx.isAuthenticated()) {
+      ctx.redirect('/');
+    } else {
+      await next();
+    }
+  })
   .get('/auth/facebook/callback', async (ctx, next) => {
     console.log('----------------callback')
     await passport.authenticate('facebook', {

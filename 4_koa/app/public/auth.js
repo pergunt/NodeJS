@@ -1,31 +1,26 @@
-/*
-const form = document.forms[0];
+document.addEventListener('DOMContentLoaded', () => {
 
-form.addEventListener('submit', async ev => {
-  ev.preventDefault();
-  const {
-    target,
-    target: {
-      elements: {
-        _csrf,
-        email,
-        password
-      }
-    }
-  } = ev;
-  const request = await fetch(target.action, {
-    method: 'post',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-      _csrf:  _csrf.value
+  const fbLink = document.querySelector('[href="/login/facebook"]');
+  if (fbLink) {
+    fbLink.addEventListener('click', ev => {
+      ev.preventDefault();
+      window.fbAsyncInit();
+      window.FB.login(function(response) {
+        if (response.authResponse) {
+          localStorage.setItem('accessToken', response.authResponse.accessToken);
+          fetch(`/login/facebook?access_token=${response.authResponse.accessToken}`)
+            .then(resp => {
+              if (resp.status === 200) {
+                location.reload();
+              }
+              console.log(resp);
+            });
+          console.log('Welcome!  Fetching your information.... ', response.authResponse);
+        } else {
+          console.log('User cancelled login or did not fully authorize.');
+        }
+      }, {scope: 'public_profile,email'});
     })
-  });
-  if (request.status === 200) {
-    location.href = '/';
   }
 });
-*/
+// /auth/facebook/token?access_token=<TOKEN_HERE>
