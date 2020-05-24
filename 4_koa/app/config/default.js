@@ -1,11 +1,27 @@
 const defer = require('config/defer').deferConfig;
 const path = require('path');
 
+const {
+  email: user,
+  pass
+} = process.env;
+
 module.exports = {
   // secret data can be moved to env variables
   // or a separate config
   port: 3000,
   secret:   'mysecret',
+  nodemailer: {
+    gmail: {
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
+      auth: {
+        user,
+        pass,
+      }
+    }
+  },
   mongoose: {
     uri:     process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/test',
     options: {
@@ -39,5 +55,8 @@ module.exports = {
       return path.join(cfg.root, 'templates');
     })
   },
+  static: defer(cfg => {
+    return path.join(cfg.root, 'templates');
+  }),
   root:     process.cwd()
 };

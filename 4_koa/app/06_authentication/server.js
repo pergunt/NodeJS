@@ -5,10 +5,13 @@ const logout = require('./logout');
 const registration = require('./registration');
 const passport = require('koa-passport');
 const config = require('config');
+const emailSender = require('./emailsender');
 
 const router = new Router();
 
 router
+  .get('/email', emailSender.get)
+  .post('/email', emailSender.post)
   .get('/', frontPage.get)
   .get('/signup', registration.get)
   .get('/login/facebook', async (ctx, next) => {

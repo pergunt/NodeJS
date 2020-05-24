@@ -1,0 +1,8 @@
+
+extends layout
+
+block content
+    form(action="/email" method="post")
+        .form-group
+            input(type='text' name='message').form-control
+        input(type="hidden" name="_csrf" value=csrf())
