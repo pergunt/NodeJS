@@ -23,9 +23,19 @@ const userSchema = new Schema({
       }
     },
   },
+  token: {
+    type: String,
+    require: true,
+    index: true
+  },
   deleted: Boolean,
+  confirmedEmail: {
+    type: Boolean,
+    default: false
+  },
   passwordHash: {
     type: String,
+    require: true
   },
   salt: {
     type: String

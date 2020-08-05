@@ -24,7 +24,7 @@ passport.use(new LocalStrategy({
         return done(err);
       }
 
-      if (!user || !user.checkPassword(password)) {
+      if (!user || !user.confirmedEmail || !user.checkPassword(password)) {
         // don't say whether the user exists
         return done(null, false, { message: 'Нет такого пользователя или пароль неверен.' });
       }

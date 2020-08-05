@@ -11,20 +11,13 @@ const cssPath = config.get('static') + '/email.css';
 const transporter = nodemailer.createTransport(nodeMailerConfig);
 transporter.use('compile', htmlToText());
 
-module.exports.get = async ctx => {
-  ctx.body = ctx.render('email');
-};
-module.exports.post = async ctx => {
-  const htmlFile = ctx.render('email');
-  const css = cssPath;
-
-  const {message} = ctx.request.body;
+const sendMail = async ({message, htmlFile}) => {
   const mailOptions = {
     from: 'iroskoshnyi@softjourn.com', // sender address
     to: "ivanroskishny@gmail.com", // list of receivers
     subject: "Hello ✔", // Subject line
     text: message, // plain text body
-    html: juice.inlineContent(htmlFile, css)// html body
+    html: juice.inlineContent(htmlFile, cssPath)// html body
   };
   const info = await transporter.sendMail(mailOptions);
 
@@ -33,5 +26,18 @@ module.exports.post = async ctx => {
 
   // Preview only available when sending through an Ethereal account
   console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info))
+}
+module.exports.sendMail = sendMail;
+module.exports.get = async ctx => {
+  ctx.body = ctx.render('email');
+};
+module.exports.post = async ctx => {
+  const {message} = ctx.request.body;
+  const htmlFile = ctx.render('email');
+  await sendMail({
+    ctx,
+    message,
+    htmlFile
+  })
   ctx.redirect('/email');
 };

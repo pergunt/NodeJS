@@ -9,7 +9,7 @@ const {
 module.exports = {
   // secret data can be moved to env variables
   // or a separate config
-  port: 3000,
+  port: 8080,
   secret:   'mysecret',
   nodemailer: {
     gmail: {

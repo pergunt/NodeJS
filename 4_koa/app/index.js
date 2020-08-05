@@ -26,7 +26,6 @@ const chatRouter = require('./01_ht_chat_koa_rewritten/server');
 const usersRouter = require('./05_users_server/server');
 const authServer = require('./06_authentication/server');
 
-
 const router = new Router();
 
 router.get('/views', async function(ctx, next) {
@@ -49,7 +48,7 @@ const options = {
   key: fs.readFileSync(path.resolve(__dirname, 'key.pem')),
   cert: fs.readFileSync(path.resolve(__dirname, 'cert.pem'))
 };
-
-https.createServer(options, app.callback()).listen(config.get('port'), () => {
-  console.log('Listening at', config.get('port'));
-});
+app.listen(config.get('port'))
+// https.createServer(options, app.callback()).listen(config.get('port'), () => {
+//   console.log('Listening at', config.get('port'));
+// });
